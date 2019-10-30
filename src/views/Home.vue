@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="mapContainer" id="mapContainer" style="width: 100%;height: 800px;"></div>
+    <div class="mapContainer" id="mapContainer"></div>
   </div>
 </template>
 
@@ -11,11 +11,11 @@
 import AMap from 'AMap' // 引入高德地图
 export default {
   name: 'home',
-  mounted () {
-    this.init()
+  mounted(){
+    this.initMap()
   },
   methods: {
-    init () {
+    initMap(){
       let map = new AMap.Map('mapContainer', {
         center: [116.397428, 39.90923],
         resizeEnable: true,
@@ -25,3 +25,11 @@ export default {
   }
 }
 </script>
+<style lang="less">
+.home{
+	height: 100%;
+}
+.mapContainer{
+	height: 100%;
+}
+</style>
