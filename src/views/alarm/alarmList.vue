@@ -1,7 +1,7 @@
 <template>
   <div class="alarmList">
     <div class="title alarmList-title">
-      <span>消息</span>
+      <span>消息通知</span>
       <el-radio-group v-model="selectValue" class="raidoBox">
         <el-radio v-for="(item, index) in selectOptions" :key="index" :label="item.value">{{item.label}}</el-radio>
       </el-radio-group>
@@ -34,16 +34,15 @@ export default {
 
   .alarmList {
     position: absolute;
-    left: 24%;
-    right: 24%;
+	z-index:999;
+    left: 0.17rem;
     bottom: .1rem;
+	right:30%;
     overflow: hidden;
-    height: 19.5%;
+    height: 3rem;
 
     .alarmList-title {
-      width: 45% !important;
-      display: flex;
-      justify-content: space-between;
+      float: left;
       span {
         padding-left: 0 !important;
         display: inline-block;
@@ -100,9 +99,11 @@ export default {
         cursor: pointer;
       }
     }
-
+	.raidoBox{
+		margin-left: 1rem;
+	}
     .raidoBox .el-radio {
-      // margin-left: .2rem;
+      color: white;
       line-height: .72rem;
     }
   }

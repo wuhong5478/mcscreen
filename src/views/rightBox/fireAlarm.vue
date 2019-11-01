@@ -1,12 +1,12 @@
 <template>
-  <div class="workingSituation">
-    <div class="title"><span>隐患统计</span></div>
+  <div class="fireAlarm">
+    <div class="title"><span>火警处理统计</span></div>
     <div class="content"></div>
   </div>
 </template>
 <script>
 export default {
-  name: 'workingSituation',
+  name: 'fireAlarm',
   data(){
     return{
     }
@@ -14,7 +14,7 @@ export default {
 };
 </script>
 <style lang="less">
-  .workingSituation{
+  .fireAlarm{
     height: 100%;
   }
 </style>

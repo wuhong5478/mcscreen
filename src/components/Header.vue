@@ -2,7 +2,7 @@
   <div class="header">
     <div class="left">数字化建设</div>
     <div class="center">
-      梅城古镇智能消防
+      梅城古镇智能消防平台
     </div>
     <div class="right">
       2019年10月27日 17:51:15 星期日
@@ -25,7 +25,7 @@ export default {
     top: 0;
     font-size: .38rem;
     font-weight: bolder;
-    background: #3A4854;
+    background-color: #1a1f41;
     padding: 0 .35rem;
     display: flex;
     justify-content: space-between;

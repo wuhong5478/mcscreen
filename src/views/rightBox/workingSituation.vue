@@ -1,6 +1,6 @@
 <template>
   <div class="workingSituation">
-    <div class="title"><span>隐患统计</span></div>
+    <div class="title"><span>隐患处理统计</span></div>
     <div class="content"></div>
   </div>
 </template>
