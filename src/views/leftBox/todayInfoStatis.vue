@@ -28,6 +28,7 @@ export default {
   name: 'todayInfoStatis',
   data(){
     return{
+
     }
   }
 };

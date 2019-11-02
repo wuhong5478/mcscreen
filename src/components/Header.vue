@@ -5,14 +5,53 @@
       梅城古镇智能消防平台
     </div>
     <div class="right">
-      2019年10月27日 17:51:15 星期日
+      {{date}} {{time}} {{day}} {{weather}} {{`${temperature}℃`}} {{`湿度 ${humidity}`}}
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Header'
+  name: 'Header',
+  data() {
+    return {
+      time: '',
+      date: '',
+      day: '',
+      weather: '',
+      humidity: '',
+      temperature: '',
+      timer: null
+    };
+  },
+  methods: {
+    getTime() {
+      let weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      this.time = this.$utils.renderTime(new Date(), 'HH:mm:ss');
+      this.date = this.$utils.renderTime(new Date(), 'YYYY年MM月DD日');
+      this.day = weekday[new Date().getDay()];
+    },
+    async getWeather() {
+      try{
+        // let result = await this.$utils.getWeather()
+        // this.weather = result.realTime.wtNm;
+        // this.humidity = result.realTime.wtHumi;
+        // this.temperature = result.realTime.wtTemp;
+      }catch(err){
+
+      }
+    }
+  },
+  mounted() {
+    this.getTime();
+    this.timer = setInterval(this.getTime, 1000);
+    // this.getWeather();
+  },
+  beforeDestroy() {
+    if (this.timer) {
+      clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器
+    }
+  }
 }
 </script>
 <style scoped lang="less">
@@ -48,6 +87,7 @@ export default {
     .right {
       height: 100%;
       width: 30%;
+      font-size: .3rem;
       line-height: 1.2rem;
       text-align: right;
     }
