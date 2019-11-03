@@ -1,6 +1,6 @@
 <template>
   <div class="todayInfoStatis">
-    <div class="title"><span>今日信息统计</span></div>
+    <div class="title flex"><span>今日信息统计</span></div>
     <div class="content">
 		<div class="content-tips">
 			<span class="txt">今日报警总数</span>

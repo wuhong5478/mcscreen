@@ -3,35 +3,53 @@
     <Header></Header>
     <aMap></aMap>
     <div class="leftBox">
-      <div class="todayInfoStatis-wrap">
+      <div v-show="showType == 1" class="todayInfoStatis-wrap">
         <todayInfoStatis></todayInfoStatis>
       </div>
-      <div class="equipmentCondition-wrap">
+      <div v-show="showType == 1" class="equipmentCondition-wrap">
         <equipmentCondition></equipmentCondition>
+      </div>
+      <div v-show="showType == 2" class="fireInfor-wrap">
+        <fireInfor></fireInfor>
       </div>
     </div>
     <div class="rightBox">
-      <div class="workingSituation-wrap">
+      <div v-show="showType == 1" class="workingSituation-wrap">
         <workingSituation></workingSituation>
       </div>
-      <div class="fireAlarm-wrap">
+      <div v-show="showType == 1" class="fireAlarm-wrap">
         <fireAlarm></fireAlarm>
       </div>
-      <div class="taskInspection-wrap">
+      <div v-show="showType == 1" class="taskInspection-wrap">
         <taskInspection></taskInspection>
       </div>
+	  
+	  <div v-show="showType == 2" class="fireRecourse-wrap">
+        <fireRecourse></fireRecourse>
+      </div>
+	  <div v-show="showType == 2" class="fireMoniter-wrap">
+        <fireMoniter></fireMoniter>
+      </div>
+
     </div>
-    <alarmList></alarmList>
+    <alarmNormalList v-show="showType == 1"></alarmNormalList>
+    <alarmFireList v-show="showType == 2"></alarmFireList>
   </div>
 </template>
 
 <script>
-import alarmList from "@/views/alarm/alarmList";
-import todayInfoStatis from "@/views/leftBox/todayInfoStatis";
-import equipmentCondition from "@/views/leftBox/equipmentCondition";
-import workingSituation from "@/views/rightBox/workingSituation";
-import fireAlarm from "@/views/rightBox/fireAlarm";
-import taskInspection from "@/views/rightBox/taskInspection";
+import alarmNormalList from "@/views/alarm/alarmNormalList";
+import alarmFireList from "@/views/alarm/alarmFireList";
+import todayInfoStatis from "@/views/normal/leftBox/todayInfoStatis";
+import equipmentCondition from "@/views/normal/leftBox/equipmentCondition";
+import workingSituation from "@/views/normal/rightBox/workingSituation";
+import fireAlarm from "@/views/normal/rightBox/fireAlarm";
+import taskInspection from "@/views/normal/rightBox/taskInspection";
+
+import fireInfor from "@/views/fire/leftBox/fireInfor";
+import fireMoniter from "@/views/fire/rightBox/fireMoniter";
+import fireRecourse from "@/views/fire/rightBox/fireRecourse";
+
 import Header from "@/components/Header.vue";
 import aMap from "@/views/map/aMap";
 
@@ -39,13 +57,22 @@ export default {
   name: "home",
   components: {
     Header,
-    alarmList,
+	alarmNormalList,
+	alarmFireList,
     todayInfoStatis,
     equipmentCondition,
     workingSituation,
     fireAlarm,
     taskInspection,
+	fireInfor,
+	fireMoniter,
+	fireRecourse,
     aMap
+  },
+  data() {
+    return {
+      showType: 1
+    };
   },
   mounted() {
     this.setFontSize();
@@ -86,6 +113,9 @@ export default {
     border-radius: 0.1rem 0.1rem 0 0;
     font-weight: 600;
     color: #81d3f8;
+  }
+
+  .flex {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -132,6 +162,13 @@ export default {
     padding: 0.17rem 0 0 0.17rem;
     box-sizing: border-box;
   }
+  .fireInfor-wrap {
+    width: 100%;
+    height: 100%;
+    padding: 0.17rem 0 0 0.17rem;
+    box-sizing: border-box;
+  }
+  
 }
 
 .rightBox {
@@ -159,6 +196,18 @@ export default {
     width: 100%;
     height: 30%;
     padding: 0 0.17rem 0rem 0.05rem;
+    box-sizing: border-box;
+  }
+  .fireRecourse-wrap{
+	width: 100%;
+    height: 35%;
+      padding: 0 0.17rem 0.17rem 0.05rem;
+    box-sizing: border-box;
+  }
+  .fireMoniter-wrap{
+	width: 100%;
+    height: 65%;
+     padding: 0 0.17rem 0rem 0.05rem;
     box-sizing: border-box;
   }
 }

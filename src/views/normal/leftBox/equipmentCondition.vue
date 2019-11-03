@@ -1,6 +1,6 @@
 <template>
   <div class="equipmentCondition">
-    <div class="title">
+    <div class="title flex">
       <span>设备统计</span>
     </div>
     <div class="content">

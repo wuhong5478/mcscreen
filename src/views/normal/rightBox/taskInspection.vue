@@ -1,6 +1,6 @@
 <template>
   <div class="taskInspection">
-    <div class="title">
+    <div class="title flex">
       <span>任务巡检统计</span>
     </div>
     <div class="content">
