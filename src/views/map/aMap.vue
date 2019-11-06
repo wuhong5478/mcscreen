@@ -21,8 +21,11 @@
 		<el-dialog title="设备信息" :visible.sync="deviceDialogVisible" width="50%">
 			<deviceMsg></deviceMsg>
 		</el-dialog>
-		
-		
+		<ul ref="dig" class="mapinfoWin">
+			<li @click="showBuildMsg" class="build"><img src="../../assets/mapIcon/infowin_1.png"><p>建筑信息</p></li>
+			<li @click="showDangerMsg"><img src="../../assets/mapIcon/infowin_2.png"><p>设备信息</p></li>
+		<li @click="showDeviceMsg"><img src="../..//assets/mapIcon/infowin_3.png"><p>隐患信息</p></li>
+		</ul>
 	</div>
 </template>
 <script>
@@ -30,9 +33,6 @@
 	import buildMsg from "@/views/map/buildMsg";
 	import dangerMsg from "@/views/map/dangerMsg";
 	import deviceMsg from "@/views/map/deviceMsg";
-	import infowin1 from '@/assets/mapIcon/infowin_1.png'
-	import infowin2 from '@/assets/mapIcon/infowin_2.png'
-	import infowin3 from '@/assets/mapIcon/infowin_3.png'
 	export default {
 		name: 'aMap',
 		components: {
@@ -58,7 +58,7 @@
 				],
 				buildDialogVisible: false,
 				dangerDialogVisible: false,
-				deviceDialogVisible:true 
+				deviceDialogVisible: false 
 			}
 		},
 		mounted() {
@@ -102,14 +102,12 @@
 					    offset: new AMap.Pixel(-10, -10),
 						size: new AMap.Size(25, 34),
 					});
-					var  _content = `<ul class="mapinfoWin">
-										<li class="build"><img src="${infowin1}"><p>建筑信息</p></li>
-										<li><img src="${infowin2}"><p>设备信息</p></li>
-										<li><img src="${infowin3}"><p>隐患信息</p></li>
-									</ul>`;
+					var  _content = this.$refs.dig;
 					marker.content = _content;
-					marker.on("click",markerClick)
-					marker.emit('click', {target: marker});
+					marker.on("click", markerClick)
+					marker.emit('click', {
+						target: marker
+					});
 					markersList.push(marker)
 				}
 				map.add(markersList);	
@@ -121,9 +119,14 @@
 				}
 			},
 			//建筑信息
-			openBuildMsg(){
-				alert(1)
+			showBuildMsg(){
 				this.buildDialogVisible = true;
+			},
+			showDangerMsg(){
+				this.dangerDialogVisible = true;
+			},
+			showDeviceMsg(){
+				this.deviceDialogVisible = true;
 			}
 			
 		}
