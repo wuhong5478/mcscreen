@@ -8,33 +8,65 @@
 			<li><img src="../../assets/mapIcon/water.png" alt="">水源</li>
 			<li><img src="../../assets/mapIcon/video.png" alt="">摄像头</li>
 		</ul>
+		
+		<!--建筑信息弹窗-->
+		<el-dialog title="建筑概况" :visible.sync="buildDialogVisible" width="35%">
+			<buildMsg></buildMsg>
+		</el-dialog>
+		<!--隐患信息弹窗-->
+		<el-dialog title="隐患信息" :visible.sync="dangerDialogVisible" width="65%">
+			<dangerMsg></dangerMsg>
+		</el-dialog>
+		<!--设备信息弹窗-->
+		<el-dialog title="设备信息" :visible.sync="deviceDialogVisible" width="50%">
+			<deviceMsg></deviceMsg>
+		</el-dialog>
+		
+		
 	</div>
 </template>
 <script>
 	import AMap from 'AMap' // 引入高德地图
+	import buildMsg from "@/views/map/buildMsg";
+	import dangerMsg from "@/views/map/dangerMsg";
+	import deviceMsg from "@/views/map/deviceMsg";
+	import infowin1 from '@/assets/mapIcon/infowin_1.png'
+	import infowin2 from '@/assets/mapIcon/infowin_2.png'
+	import infowin3 from '@/assets/mapIcon/infowin_3.png'
 	export default {
 		name: 'aMap',
+		components: {
+		    buildMsg,
+		    dangerMsg,
+		    deviceMsg
+		},
 		data() {
 			return {
 				mapData: [
 					{
-						lon:116.38,
+						lon:116.36,
 						lat:39.90
 					},
 					{
-						lon:116.38,
-						lat:39.81
+						lon:116.37,
+						lat:39.71
 					},
 					{
 						lon:116.39,
 						lat:39.83
 					}
-				]
+				],
+				buildDialogVisible: false,
+				dangerDialogVisible: false,
+				deviceDialogVisible:true 
 			}
 		},
-		
 		mounted() {
 			this.initMap();
+			
+			
+			//地图中图标点击事件
+			
 		},
 		methods: {
 			initMap() {
@@ -43,38 +75,57 @@
 					resizeEnable: true,
 					zoom: 11
 				});
-				
 				 AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
-				
 					//添加一个缩放控件
 					map.addControl(new BasicControl.Zoom({
 						position: 'lm'
 					}));
-			
 					//图层切换控件
 					map.addControl(new BasicControl.LayerSwitcher({
 						position: 'rt'
 					}));
 				});
-				
 				var markersList = [];
+				var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(4, -15)});
 				for(var i=0;i<this.mapData.length;i++){
 					var _data = this.mapData[i];
+	
+					//自定义点标记
+					var mapIco = new AMap.Icon({
+						size: new AMap.Size(30, 44),
+						image: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png',
+						imageSize: new AMap.Size(30, 44)
+					});
 					var marker = new AMap.Marker({
 					    position: new AMap.LngLat(_data.lon,_data.lat),
-						//icon: '//vdata.amap.com/icons/b18/1/2.png'  //todo 替换成对应的点
-					    offset: new AMap.Pixel(-10, -10)
+						icon:mapIco,
+					    offset: new AMap.Pixel(-10, -10),
+						size: new AMap.Size(25, 34),
 					});
-					
-					marker.on("click",function(e){
-						console.log(e)
-					})
-					
+					var  _content = `<ul class="mapinfoWin">
+										<li class="build"><img src="${infowin1}"><p>建筑信息</p></li>
+										<li><img src="${infowin2}"><p>设备信息</p></li>
+										<li><img src="${infowin3}"><p>隐患信息</p></li>
+									</ul>`;
+					marker.content = _content;
+					marker.on("click",markerClick)
+					marker.emit('click', {target: marker});
 					markersList.push(marker)
 				}
 				map.add(markersList);	
-
+				
+				
+				function markerClick(e) {
+					infoWindow.setContent(e.target.content);
+					infoWindow.open(map, e.target.getPosition());
+				}
 			},
+			//建筑信息
+			openBuildMsg(){
+				alert(1)
+				this.buildDialogVisible = true;
+			}
+			
 		}
 	};
 </script>
@@ -87,10 +138,32 @@
 		top:1.5rem!important;
 		right:31%!important;
 	}
+	.amap-info-close{
+		right: 7px!important;
+	}
 	.aMap {
 		height: 100%;
 		width: 100%;
-
+		.mapinfoWin{
+			overflow:hidden;
+			li{
+				cursor: pointer;
+				float:left;
+				width:1.15rem;
+				height:1.3rem;
+				color:black;
+				img{
+					width: 0.8rem;
+					height: 0.8rem;
+					display: block;
+					margin: 0.1rem auto 0;
+				}
+				p{
+					text-align: center;
+					line-height: 0.4rem;
+				}
+			}
+		}
 		.legend {
 			position: absolute;
 			z-index: 999;
