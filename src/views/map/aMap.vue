@@ -8,7 +8,7 @@
 			<li><img src="../../assets/mapIcon/water.png" alt="">水源</li>
 			<li><img src="../../assets/mapIcon/video.png" alt="">摄像头</li>
 		</ul>
-		
+
 		<!--建筑信息弹窗-->
 		<el-dialog title="建筑概况" :visible.sync="buildDialogVisible" width="35%">
 			<buildMsg></buildMsg>
@@ -26,6 +26,7 @@
 			<li @click="showDangerMsg"><img src="../../assets/mapIcon/infowin_2.png"><p>设备信息</p></li>
 		<li @click="showDeviceMsg"><img src="../..//assets/mapIcon/infowin_3.png"><p>隐患信息</p></li>
 		</ul>
+		<div id="panel"></div>
 	</div>
 </template>
 <script>
@@ -33,27 +34,33 @@
 	import buildMsg from "@/views/map/buildMsg";
 	import dangerMsg from "@/views/map/dangerMsg";
 	import deviceMsg from "@/views/map/deviceMsg";
+	import type1 from '@/assets/mapIcon/fireStation.png'
+	import type2 from '@/assets/mapIcon/hospital.png'
+	import type3 from '@/assets/mapIcon/danger.png'
+
 	export default {
 		name: 'aMap',
 		components: {
-		    buildMsg,
-		    dangerMsg,
-		    deviceMsg
+			buildMsg,
+			dangerMsg,
+			deviceMsg
 		},
 		data() {
 			return {
-				mapData: [
-					{
-						lon:116.36,
-						lat:39.90
+				mapData: [{
+						type: 1, //消防站
+						lon: 116.36,
+						lat: 39.90
 					},
 					{
-						lon:116.37,
-						lat:39.71
+						type: 2, //医院
+						lon: 116.37,
+						lat: 39.71
 					},
 					{
-						lon:116.39,
-						lat:39.83
+						type: 3, //危险源
+						lon: 116.39,
+						lat: 39.83
 					}
 				],
 				buildDialogVisible: false,
@@ -63,19 +70,16 @@
 		},
 		mounted() {
 			this.initMap();
-			
-			
-			//地图中图标点击事件
-			
 		},
 		methods: {
 			initMap() {
 				let map = new AMap.Map('mapContainer', {
 					center: [116.397428, 39.90923],
 					resizeEnable: true,
-					zoom: 11
+					zoom: 13
 				});
-				 AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
+
+				AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
 					//添加一个缩放控件
 					map.addControl(new BasicControl.Zoom({
 						position: 'lm'
@@ -85,11 +89,29 @@
 						position: 'rt'
 					}));
 				});
+
+				//构造路线导航类   https://lbs.amap.com/api/javascript-api/example/driving-route/plan-route-according-to-lnglat
+				var driving = new AMap.Driving({
+					map: map,
+					panel: "panel"
+				});
+				// 根据起终点经纬度规划驾车导航路线
+				driving.search(new AMap.LngLat(116.397428, 39.90923), new AMap.LngLat(116.427281, 39.903719), function(status, result) {
+					// result 即是对应的驾车导航信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
+					if(status === 'complete') {
+						console.log('绘制驾车路线完成')
+					} else {
+						console.log('获取驾车数据失败：' + result)
+					}
+				});
+
 				var markersList = [];
-				var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(4, -15)});
-				for(var i=0;i<this.mapData.length;i++){
+				var infoWindow = new AMap.InfoWindow({
+					offset: new AMap.Pixel(4, -15)
+				});
+				for(var i = 0; i < this.mapData.length; i++) {
 					var _data = this.mapData[i];
-	
+
 					//自定义点标记
 					var mapIco = new AMap.Icon({
 						size: new AMap.Size(30, 44),
@@ -97,9 +119,9 @@
 						imageSize: new AMap.Size(30, 44)
 					});
 					var marker = new AMap.Marker({
-					    position: new AMap.LngLat(_data.lon,_data.lat),
-						icon:mapIco,
-					    offset: new AMap.Pixel(-10, -10),
+						position: new AMap.LngLat(_data.lon, _data.lat),
+						icon: mapIco,
+						offset: new AMap.Pixel(-10, -10),
 						size: new AMap.Size(25, 34),
 					});
 					var  _content = this.$refs.dig;
@@ -110,9 +132,8 @@
 					});
 					markersList.push(marker)
 				}
-				map.add(markersList);	
-				
-				
+				map.add(markersList);
+
 				function markerClick(e) {
 					infoWindow.setContent(e.target.content);
 					infoWindow.open(map, e.target.getPosition());
@@ -133,35 +154,61 @@
 	};
 </script>
 <style lang="less">
-	.amap-ui-control-position-lm{
-		left:31%!important;
-		bottom:2rem!important;
+	.amap-ui-control-position-lm {
+		left: 31%!important;
+		bottom: 2rem!important;
 	}
-	.amap-ui-control-position-rt{
-		top:1.5rem!important;
-		right:31%!important;
+	
+	.amap-ui-control-position-rt {
+		top: 1.5rem!important;
+		right: 31%!important;
 	}
-	.amap-info-close{
+	
+	.amap-info-close {
 		right: 7px!important;
 	}
+	
+	#panel {
+		position: fixed;
+	    background-color: white;
+	    max-height: 90%;
+	    overflow-y: auto;
+	    top: 1.29rem;
+	    right: 30%;
+	    width: 200px;
+	    z-index: 99999;
+	}
+	
+	#panel .amap-call {
+		background-color: #009cf9;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+	}
+	
+	#panel .amap-lib-driving {
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+		overflow: hidden;
+	}
+	
 	.aMap {
 		height: 100%;
 		width: 100%;
-		.mapinfoWin{
-			overflow:hidden;
-			li{
+		.mapinfoWin {
+			overflow: hidden;
+			li {
 				cursor: pointer;
-				float:left;
-				width:1.15rem;
-				height:1.3rem;
-				color:black;
-				img{
+				float: left;
+				width: 1.15rem;
+				height: 1.3rem;
+				color: black;
+				img {
 					width: 0.8rem;
 					height: 0.8rem;
 					display: block;
 					margin: 0.1rem auto 0;
 				}
-				p{
+				p {
 					text-align: center;
 					line-height: 0.4rem;
 				}
@@ -179,7 +226,6 @@
 			background: inherit;
 			background-color: rgba(30, 43, 70, 1);
 			opacity: 0.8;
-
 			li {
 				cursor: pointer;
 				position: relative;
@@ -193,7 +239,7 @@
 				font-size: 0.21rem;
 				text-indent: 0.6rem;
 				color: #00FFFF;
-				img{
+				img {
 					width: 0.35rem;
 					height: 0.35rem;
 					position: absolute;
